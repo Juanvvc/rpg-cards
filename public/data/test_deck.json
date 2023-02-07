@@ -1,0 +1,17 @@
+{
+    "style": "background-image: url('data/paper-texture.jpg'); background-size: cover;",
+    "width": 400,
+    "height": 600,
+    "cycle": false,
+    "cover": {
+        "title": "COVER",
+        "style": "background-image: url('data/back2.jpg'); background-size: cover;"
+    },
+    "cards": [
+        {"title": 1 },
+        {"title": 2, "text": "This is a test"},
+        {"title": 3, "text": "This is a test", "footer": "This is a test"},
+        {"title": 4},
+        {"title": 5}
+    ]
+}
