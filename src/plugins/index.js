@@ -1,12 +1,1 @@
-/**
- * plugins/index.js
- *
- * Automatically included in `./src/main.js`
- */
-
-import { loadFonts } from './webfontloader'
-
-export function registerPlugins () {
-  loadFonts()
-}
- 
+export { default as vuetify } from './vuetify'
