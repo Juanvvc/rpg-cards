@@ -1,7 +1,15 @@
 <template>
   <v-app>
     <v-main>
-      <Deck :deck-info="deckInfo" @currentCard="onCurrentCard" @shuffle="onShuffle" />
+      <DeckList v-if="!selectedDeckPath" :paths="deckPaths" @select="openDeck" />
+
+      <template v-else>
+        <div class="pa-4">
+          <v-btn icon="mdi-arrow-left" variant="text" class="mb-4" @click="closeDeck" />
+        </div>
+        <Deck :deck-info="deckInfo" @currentCard="onCurrentCard" @shuffle="onShuffle" />
+      </template>
+
       <v-snackbar v-model="showShuffled" color="success">The deck was shuffled</v-snackbar>
     </v-main>
   </v-app>
@@ -10,19 +18,32 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Deck from '@/components/Deck.vue'
+import DeckList from '@/components/DeckList.vue'
 
-const deckInfo = ref({
-  color: 'red',
-  cover: { title: 'Loading' },
-  cards: [],
-})
+const deckPaths = ref([])
+const selectedDeckPath = ref(null)
+const deckInfo = ref({ cover: { title: 'Loading' }, cards: [] })
 const showShuffled = ref(false)
 
 onMounted(() => {
-  fetch(import.meta.env.VITE_DECK_DATA)
+  fetch(import.meta.env.VITE_DECK_INDEX)
     .then(r => r.json())
-    .then(data => { deckInfo.value = data })
+    .then(data => { deckPaths.value = data })
 })
+
+function openDeck(path) {
+  fetch(path)
+    .then(r => r.json())
+    .then(data => {
+      deckInfo.value = data
+      selectedDeckPath.value = path
+    })
+}
+
+function closeDeck() {
+  selectedDeckPath.value = null
+  deckInfo.value = { cover: { title: 'Loading' }, cards: [] }
+}
 
 function onShuffle() {
   const arr = deckInfo.value.cards

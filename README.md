@@ -1,8 +1,8 @@
 # RPG Deck Viewer
 
-A simple browser-based card deck viewer for tabletop RPGs. Load any deck defined in a JSON file and flip through the cards one by one, or shuffle them for a random draw. Cards can display a title, body text, a footer, and a custom background (solid color or image).
+A browser-based card deck viewer for tabletop RPGs. The app opens on a grid showing all available decks; click one to browse its cards one by one, or shuffle them for a random draw. Cards can display a title, body text, a footer, and a custom background (solid color or image).
 
-Built with Vue 3, Vuetify 4, and Vite 8. No backend required.
+Built with Vue 3, Vuetify 4, and Vite 8. No backend required — all data is static JSON.
 
 ## Docker
 
@@ -10,12 +10,7 @@ Built with Vue 3, Vuetify 4, and Vite 8. No backend required.
 docker compose up --build
 ```
 
-Opens at `http://localhost:8080`. To use a different deck file, pass it as a build argument:
-
-```bash
-docker compose build --build-arg VITE_DECK_DATA=data/my_deck.json
-docker compose up
-```
+Opens at `http://localhost:8080`.
 
 ## Local development
 
@@ -26,15 +21,18 @@ npm run build    # production build → dist/
 npm run preview  # serve the dist/ build locally
 ```
 
-## Configuring the deck
+## Adding decks
 
-Set the path to your deck JSON in `.env`:
+The list of available decks is defined in `public/data/index.json`:
 
+```json
+[
+  "data/my_deck.json",
+  "data/another_deck.json"
+]
 ```
-VITE_DECK_DATA=data/my_deck.json
-```
 
-Place the JSON file (and any image assets it references) inside `public/`. The path is relative to the site root, so `data/my_deck.json` maps to `public/data/my_deck.json`.
+Each entry is a path relative to the site root. Place the deck JSON files (and any image assets) inside `public/` so they are served as static files.
 
 ### Deck JSON format
 
@@ -59,8 +57,8 @@ Place the JSON file (and any image assets it references) inside `public/`. The p
 |---|---|
 | `style` | CSS applied to every card as a fallback |
 | `width` / `height` | Pixel dimensions of the card viewer |
-| `cycle` | Whether navigation wraps from the last card back to the cover |
-| `cover` | Optional cover card shown at position 0 |
+| `cycle` | When `true`, navigation wraps from the last card back to the cover |
+| `cover` | Cover card shown at position 0 and in the deck selection grid |
 | `cards[].title` | Large heading text |
 | `cards[].text` | Body text |
 | `cards[].footer` | Small italic footer text |

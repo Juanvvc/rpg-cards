@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A Vue 3 + Vuetify 4 single-page app that displays a deck of cards as a carousel. Cards can have a title, body text, footer text, and inline CSS styling (including background images). No backend — all data is static JSON served from `public/data/`.
+A Vue 3 + Vuetify 4 single-page app for browsing tabletop RPG card decks. The landing view shows all available decks as a cover grid; selecting one opens a carousel to browse its cards. No backend — all data is static JSON served from `public/data/`.
 
 ## Commands
 
@@ -24,21 +24,19 @@ npm run preview  # preview production build locally
 
 ## Architecture
 
-### Deck configuration
+### Data layout
 
-The deck JSON path is set via `.env`:
+`public/data/index.json` — array of deck JSON paths, loaded by `App.vue` on mount:
 
+```json
+["data/deck_a.json", "data/deck_b.json"]
 ```
-VITE_DECK_DATA=data/test_deck.json
-```
 
-`App.vue` fetches that JSON at mount time and passes the parsed object as `deckInfo` to `<Deck>`.
-
-### Deck JSON schema
+Each deck JSON:
 
 ```json
 {
-  "style": "<CSS string applied to all cards as fallback>",
+  "style": "<CSS fallback applied to all cards>",
   "width": 400,
   "height": 600,
   "cycle": false,
@@ -49,22 +47,26 @@ VITE_DECK_DATA=data/test_deck.json
 }
 ```
 
-- `cover` is always rendered as index 0 (the deck face). Navigation shows position relative to `cards`, not `cover`.
-- Per-card `style` overrides the deck-level `style`. Images use `background-image` in the `style` field — there is no dedicated image field.
-- `cycle`: when `true`, navigation wraps from the last card back to cover.
+- `cover` is rendered at index 0. Navigation counters are relative to `cards`, not `cover`.
+- Per-card `style` overrides the deck-level `style`. Images use `background-image` in `style` — there is no dedicated image field.
+- `cycle`: when `true`, navigation wraps from the last card back to the cover.
+- The env var `VITE_DECK_INDEX` (default `data/index.json`) sets the index path.
 
 ### Component tree
 
 ```
-App.vue       — fetches JSON, owns shuffle logic, shows snackbar on shuffle
-  Deck.vue    — v-carousel wrapper; prev/next/home/shuffle buttons; card position counter
-    Card.vue  — v-sheet displaying title / text / footer with Vuetify typography classes
+App.vue          — fetches index, manages list↔deck navigation, owns shuffle logic
+  DeckList.vue   — fetches all deck JSONs in parallel, renders cover grid; emits 'select'
+  Deck.vue       — v-carousel wrapper; prev/next/home/shuffle buttons; position counter
+    Card.vue     — v-sheet displaying title / text / footer with Vuetify typography classes
 ```
+
+`App.vue` shows `DeckList` when no deck is selected; clicking a cover fetches that deck's JSON and switches to `Deck`. A back button returns to the list.
 
 `Deck.vue` computes `availableCards = [cover, ...cards]` so index 0 is always the cover. `currentCard` (v-model on `v-carousel`) is the zero-based position within `availableCards`.
 
 ### Adding a new card field
 
-1. Add the field to the JSON schema (document it in `README.md`).
+1. Add the field to the deck JSON schema (document it in `README.md`).
 2. Pass it as a prop from `Deck.vue` to `Card.vue`.
 3. Render it in `Card.vue` with a `v-if` guard (same pattern as `title`, `text`, `footer`).

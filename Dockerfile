@@ -4,8 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-ARG VITE_DECK_DATA=data/test_deck.json
-ENV VITE_DECK_DATA=$VITE_DECK_DATA
+ARG VITE_DECK_INDEX=data/index.json
+ENV VITE_DECK_INDEX=$VITE_DECK_INDEX
 RUN npm run build
 
 # Serve stage
