@@ -4,24 +4,25 @@ A simple browser-based card deck viewer for tabletop RPGs. Load any deck defined
 
 Built with Vue 3, Vuetify 4, and Vite 8. No backend required.
 
-## Setup
+## Docker
+
+```bash
+docker compose up --build
+```
+
+Opens at `http://localhost:8080`. To use a different deck file, pass it as a build argument:
+
+```bash
+docker compose build --build-arg VITE_DECK_DATA=data/my_deck.json
+docker compose up
+```
+
+## Local development
 
 ```bash
 npm install
-```
-
-## Development
-
-```bash
-npm run dev
-```
-
-Opens at `http://localhost:3000` with hot-reload.
-
-## Production build
-
-```bash
-npm run build    # outputs to dist/
+npm run dev      # http://localhost:3000 with hot-reload
+npm run build    # production build → dist/
 npm run preview  # serve the dist/ build locally
 ```
 
