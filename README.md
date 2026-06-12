@@ -19,6 +19,7 @@ npm install
 npm run dev      # http://localhost:3000 with hot-reload
 npm run build    # production build → dist/
 npm run preview  # serve the dist/ build locally
+$env:VITE_DECK_INDEX = 'others/index.json' ; npm.cmd run dev  # Run with a custom index.json in Windows
 ```
 
 ## Adding decks
